@@ -19,7 +19,7 @@ The following **optional** features are implemented:
 - [ ] User can view more tweets as they scroll with infinite pagination
 - [ ] User can tap a tweet to display a "detailed" view of that tweet
 - [ ] User can open the twitter app offline and see last loaded tweets
-- [ ] On the Twitter timeline, leverage the CoordinatorLayout to apply scrolling behavior that hides / shows the toolbar.
+- [x] On the Twitter timeline, leverage the CoordinatorLayout to apply scrolling behavior that hides / shows the toolbar.
 - [x] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
 - [ ] User can see embedded image media within the tweet detail view
 - [ ] User sees an **indeterminate progress indicator** when any background or network task is happening
@@ -42,7 +42,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Ended up losing a lot of time when working to implement the scrolling behavior for the toolbar, simply because I didn't understand that the CoordinatorLayout was meant to replace the ConstraintLayout and not layer with it.
 
 ## Open-source libraries used
 
