@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,7 +24,6 @@ public class ComposeActivity extends AppCompatActivity {
     public static final int MAX_TWEET_LENGTH = 140;
 
     private EditText etCompose;
-    private Button btnTweet;
     private TwitterClient client;
 
     @Override
@@ -43,56 +42,62 @@ public class ComposeActivity extends AppCompatActivity {
 
         client = TwitterApp.getRestClient(this);
         etCompose = findViewById(R.id.etCompose);
-        btnTweet = findViewById(R.id.btnTweet);
+    }
 
-        //set click listener on button
-        btnTweet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String tweetContent = etCompose.getText().toString();
-                // TODO: Error-handling
-                if (tweetContent.isEmpty()) {
-                    Toast.makeText(ComposeActivity.this, "Your Tweet is empty!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (tweetContent.length() > MAX_TWEET_LENGTH) {
-                    Toast.makeText(ComposeActivity.this, "Your Tweet is too long!", Toast.LENGTH_LONG).show();
-                    return;
-                }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.compose_toolbar, menu);
+        return true;
+    }
 
-                //Toast.makeText(ComposeActivity.this, tweetContent, Toast.LENGTH_LONG).show();
-                //make API call to Twitter to publish the content in edit text
-                client.composeTweet(tweetContent, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        //super.onSuccess(statusCode, headers, response);
-                        Log.d("TwitterClient", "Successfully posted tweet " + response.toString());
-
-                        //return Tweet
-                        try {
-                            Tweet tweet = Tweet.fromJson(response);
-
-                            Intent data = new Intent();
-                            data.putExtra("tweet", Parcels.wrap(tweet));
-
-                            //set result code and bundle data for response
-                            setResult(RESULT_OK, data);
-
-                            //close the activity, pass data to parent
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //super.onFailure(statusCode, headers, responseString, throwable);
-                        Log.e("TwitterClient", "Failed to post tweet " + responseString);
-                    }
-                });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.miTweet) {
+            String tweetContent = etCompose.getText().toString();
+            // TODO: Error-handling
+            if (tweetContent.isEmpty()) {
+                Toast.makeText(ComposeActivity.this, "Your Tweet is empty!", Toast.LENGTH_LONG).show();
+                return false;
             }
-        });
+            if (tweetContent.length() > MAX_TWEET_LENGTH) {
+                Toast.makeText(ComposeActivity.this, "Your Tweet is too long!", Toast.LENGTH_LONG).show();
+                return false;
+            }
 
+            //Toast.makeText(ComposeActivity.this, tweetContent, Toast.LENGTH_LONG).show();
+            //make API call to Twitter to publish the content in edit text
+            client.composeTweet(tweetContent, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    //super.onSuccess(statusCode, headers, response);
+                    Log.d("TwitterClient", "Successfully posted tweet " + response.toString());
+
+                    //return Tweet
+                    try {
+                        Tweet tweet = Tweet.fromJson(response);
+
+                        Intent data = new Intent();
+                        data.putExtra("tweet", Parcels.wrap(tweet));
+
+                        //set result code and bundle data for response
+                        setResult(RESULT_OK, data);
+
+                        //close the activity, pass data to parent
+                        finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    //super.onFailure(statusCode, headers, responseString, throwable);
+                    Log.e("TwitterClient", "Failed to post tweet " + responseString);
+                }
+            }); //end client
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
