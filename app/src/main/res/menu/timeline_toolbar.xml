@@ -7,5 +7,5 @@
         android:layout_height="wrap_content"
         android:icon="@drawable/compose"
         android:title="Compose"
-        app:showAsAction="ifRoom"></item>
+        app:showAsAction="always"></item>
 </menu>
